@@ -189,3 +189,6 @@ Pico FIDO uses the following libraries or portion of code:
 - MbedTLS for cryptographic operations.
 - TinyUSB for low level USB procedures.
 - TinyCBOR for CBOR parsing and formatting.
+
+## Rust migration and Slint UI
+See [docs/rust-migration-plan.md](docs/rust-migration-plan.md) for a proposed strategy to run Pico FIDO from Rust (bindings or rewrite) and to add a Slint-based touchscreen confirmation flow.
