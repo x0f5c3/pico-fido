@@ -49,6 +49,14 @@
 4. **Incremental Rust adoption**: move non-hardware logic (CBOR parsing, credential storage, OATH/OTP) into Rust while keeping hardware/USB in C; cut over piece by piece.
 5. **Full Rust or hybrid release**: stabilize either the binding-based firmware or the Rust-native stack; document build flags and flashing steps; update tests to run against both modes.
 
+## Slint vs LVGL (Rust bindings) effort comparison
+- **Rendering footprint**: Slint’s software renderer is slim and stays fully in Rust; LVGL bindings pull in the LVGL C core plus glue, typically larger but with mature widget support and numerous display drivers.
+- **Touch/UI wiring**: Both need touch controller integration; Slint expects a framebuffer + event pump, LVGL needs its input driver and tick timer. LVGL may save effort if reusing existing LVGL board support; Slint is simpler when starting from scratch with `embedded-graphics` frame buffers.
+- **Theming and UX**: Slint’s declarative `.slint` language speeds UX iteration; LVGL requires more imperative layout code but has richer ready-made widgets (charts, keyboards, etc.).
+- **Async integration**: Slint can run alongside async executors used for CTAP flows with a channel for approvals. LVGL often uses its own tick/task loop; integrating with async may need a small shim.
+- **Licensing**: Both are permissive for embedded use (Slint has GPL/commercial split with an OSS core; LVGL is MIT); both are acceptable for community builds.
+- **Best path here**: Start with **Slint** for the approve/reject flow because it keeps the Rust-focused stack small and declarative and avoids a large C dependency. Reevaluate LVGL only if we need its specialized widgets or reuse an existing LVGL BSP.
+
 ## Testing and validation
 - Unit tests in Rust for CBOR/state logic; property tests for credential encoding/decoding.
 - Host-loop integration tests that exercise `makeCredential`/`getAssertion` through the FFI boundary.
